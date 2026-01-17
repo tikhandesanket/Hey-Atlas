@@ -69,7 +69,7 @@ def generate_simple_response(user_text):
         return "Goodbye! Have a great day!"
     
     # Default - echo with confirmation
-    return f"You said: {user_text}"
+    return f"{user_text}"
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
@@ -91,11 +91,9 @@ async def websocket_endpoint(websocket: WebSocket):
                 is_speech_ended, audio_chunk = vad.process_audio(audio_bytes)
                 
                 if is_speech_ended and audio_chunk:
-                    print(f"🎤 Speech segment complete: {len(audio_chunk)} bytes")
                     
                     # Check if it's user's turn to speak
                     if not turn_manager.is_user_turn():
-                        print("⏸️ Assistant is speaking, buffering user audio...")
                         turn_manager.buffer_user_audio(audio_chunk)
                         continue
                     

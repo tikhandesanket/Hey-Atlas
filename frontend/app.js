@@ -300,10 +300,67 @@ function addTranscript(text, role = null) {
     p.style.color = "#00e5ff";
   } else if (role === "assistant" || text.includes("AI:")) {
     p.style.color = "#00ff88";
+    // speakText(text, "assistant");
+    speakLikeHuman(text);
   }
 
   transcriptDiv.appendChild(p);
   transcriptDiv.scrollTop = transcriptDiv.scrollHeight;
+}
+
+function cleanTextForSpeech(text) {
+  return text
+    .replace(/^🤖\s*AI:\s*/i, "")
+    .replace(/^AI:\s*/i, "")
+    .replace(/^USER:\s*/i, "")
+    .replace(/^You said:\s*/i, "")
+    .trim();
+}
+
+function speakText(text) {
+  cleanTextForSpeech(text);
+  if (!window.speechSynthesis) return;
+
+  const cleanedText = cleanTextForSpeech(text);
+  if (!cleanedText) return;
+
+  const utterance = new SpeechSynthesisUtterance(cleanedText);
+
+  // Human-like tuning
+  utterance.rate = 1.0;
+  utterance.pitch = 1.05;
+  utterance.volume = 1.0;
+
+  const voices = speechSynthesis.getVoices();
+  const voice =
+    voices.find((v) => v.name.includes("Google") && v.lang.startsWith("en")) ||
+    voices.find((v) => v.lang.startsWith("en"));
+
+  if (voice) utterance.voice = voice;
+
+  speechSynthesis.cancel(); // stop previous voice
+  speechSynthesis.speak(utterance);
+}
+
+function speakLikeHuman(text) {
+  speechSynthesis.cancel();
+
+  const u = new SpeechSynthesisUtterance(
+    text.replace(/^🤖 AI:\s*/i, "").replace(/^You said:\s*/i, "")
+  );
+
+  u.rate = 0.95;
+  u.pitch = 1.02;
+  u.volume = 1;
+
+  const voices = speechSynthesis.getVoices();
+
+  u.voice =
+    voices.find((v) => v.name.includes("Google UK English Female")) ||
+    voices.find((v) => v.name.includes("Microsoft Aria")) ||
+    voices.find((v) => v.lang === "en-US");
+
+  speechSynthesis.speak(u);
 }
 
 // Setup voice animation
