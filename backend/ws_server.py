@@ -54,7 +54,7 @@ def generate_simple_response(user_text):
     
     # Name
     if "your name" in text_lower or "who are you" in text_lower:
-        return "I'm a voice assistant built from scratch using WebSockets!"
+        return "I'm Atlas, voice assistant built from scratch using WebSockets!"
     
     # Help
     if "help" in text_lower:
