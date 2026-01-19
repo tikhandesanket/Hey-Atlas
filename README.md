@@ -49,3 +49,8 @@ Install backend dependencies:
 ```bash
 pip install fastapi uvicorn
 ```
+
+## 📦 Start Applications Dependencies
+
+- Hey-Atlas/frontend$ python3 -m http.server 3000
+- Hey-Atlas/backend$ uvicorn ws_server:app --reload
